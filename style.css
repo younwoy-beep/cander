@@ -388,12 +388,19 @@ button, input, select {
 }
 
 .panel-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin: -18px -18px 12px;
+  padding: 16px 18px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--grid-line-soft);
 }
 .panel-head h2 { font-size: 17px; margin: 0; }
+.panel-head .icon-btn { width: 36px; height: 36px; }
 
 .panel-tabs {
   display: flex;

@@ -434,6 +434,7 @@ function closeSettings() {
 btnSettings.addEventListener("click", openSettings);
 btnCloseSettings.addEventListener("click", closeSettings);
 overlay.addEventListener("click", (e) => { if (e.target === overlay) closeSettings(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !overlay.hidden) closeSettings(); });
 
 document.querySelectorAll(".tab-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -482,9 +483,10 @@ btnConfirmImport.addEventListener("click", () => {
   courses = pendingImport;
   saveCourses();
   pendingImport = null;
-  importPreview.innerHTML = `<p class="preview-count">Đã lưu ${courses.length} lớp học.</p>`;
+  importPreview.innerHTML = `<p class="preview-count">Đã lưu ${courses.length} lớp học. Đang đóng…</p>`;
   btnConfirmImport.disabled = true;
   renderAll();
+  setTimeout(closeSettings, 900);
 });
 
 btnResetDefault.addEventListener("click", () => {
