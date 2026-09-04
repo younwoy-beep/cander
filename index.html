@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TKB HK1 2026-2027</title>
+<meta name="theme-color" content="#0A1B30">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="status-bar" id="statusBar">
+  <div class="status-top">
+    <span class="clock" id="clockNow">--:--:--</span>
+    <span class="date-today" id="dateToday">—</span>
+  </div>
+  <div class="status-main" id="statusMain">
+    <span class="status-label">Đang tải lịch học…</span>
+  </div>
+</header>
+
+<nav class="day-tabs" id="dayTabs" aria-label="Chọn ngày"></nav>
+
+<main class="timetable-wrap">
+  <div class="hour-ruler" id="hourRuler"></div>
+  <div class="week-grid" id="weekGrid">
+    <div class="now-line" id="nowLine"></div>
+  </div>
+</main>
+
+<footer class="legend" id="legend"></footer>
+
+<script src="script.js"></script>
+</body>
+</html>
