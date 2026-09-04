@@ -45,7 +45,6 @@
   const modalBody = document.getElementById("modalBody");
   const modalClose = document.getElementById("modalClose");
 
-  // SỬA LỖI: kiểm tra tồn tại và gán sự kiện an toàn
   function closeModal() {
     if (modalOverlay) modalOverlay.hidden = true;
   }
@@ -62,21 +61,21 @@
     if (e.key === "Escape") closeModal();
   });
 
-    function openModal(ev, occ) {
+  function openModal(ev, occ) {
     const st = statusOf(occ);
     const statusText = st.key === "ongoing" ? "ĐANG HỌC" : st.key === "upcoming" ? "Sắp tới" : "Đã học xong";
     if (modalBody) {
-      modalBody.innerHTML = `
-        <h2>${ev.ten_mon}</h2>
-        <div class="modal-row"><span>Trạng thái</span><span>${statusText}</span></div>
-        <div class="modal-row"><span>Mã lớp</span><span>${ev.ma_lop}</span></div>
-        <div class="modal-row"><span>Giảng viên</span><span>${ev.giang_vien || "—"}</span></div>
-        <div class="modal-row"><span>Thời gian</span><span>${ev.thu}, tiết ${ev.tiet_start}-${ev.tiet_end}</span></div>
-        <div class="modal-row"><span>Giờ học</span><span>${ev.gio_bat_dau} – ${ev.gio_ket_thuc}</span></div>
-        <div class="modal-row"><span>Phòng</span><span>${ev.phong}</span></div>
-        <div class="modal-row"><span>Chu kỳ</span><span>${ev.cach_tuan ? "Cách tuần" : "Hàng tuần"}</span></div>
-        <div class="modal-row"><span>Thời gian học</span><span>${ev.ngay_bat_dau} – ${ev.ngay_ket_thuc || "?"}</span></div>
-      `;
+      modalBody.innerHTML = 
+        <h2></h2>
+        <div class="modal-row"><span>Trạng thái</span><span></span></div>
+        <div class="modal-row"><span>Mã lớp</span><span></span></div>
+        <div class="modal-row"><span>Giảng viên</span><span></span></div>
+        <div class="modal-row"><span>Thời gian</span><span>, tiết -</span></div>
+        <div class="modal-row"><span>Giờ học</span><span> – </span></div>
+        <div class="modal-row"><span>Phòng</span><span></span></div>
+        <div class="modal-row"><span>Chu kỳ</span><span></span></div>
+        <div class="modal-row"><span>Thời gian học</span><span> – </span></div>
+      ;
     }
     if (modalOverlay) modalOverlay.hidden = false;
   }
@@ -118,15 +117,15 @@
         const st = statusOf(next.occ);
         if (st.key === "ongoing") {
           banner.className = "next-banner ongoing";
-          banner.innerHTML = `<div class="nb-label">Đang học ngay bây giờ</div><div class="nb-title">${next.ev.ten_mon}</div><div class="nb-sub">${next.ev.phong} · ${next.ev.gio_bat_dau} – ${next.ev.gio_ket_thuc}</div><div class="nb-count">Còn lại: ${fmtDuration(st.ms)}</div>`;
+          banner.innerHTML = <div class="nb-label">Đang học ngay bây giờ</div><div class="nb-title"></div><div class="nb-sub"> ·  – </div><div class="nb-count">Còn lại: </div>;
         } else {
           banner.className = "next-banner upcoming";
           const dt = parseISO(next.occ.dateISO);
-          banner.innerHTML = `<div class="nb-label">Tiết tiếp theo</div><div class="nb-title">${next.ev.ten_mon}</div><div class="nb-sub">${WEEKDAY_LABELS[next.ev.thu_idx]} ${pad(dt.d)}/${pad(dt.m)} · ${next.ev.gio_bat_dau} – ${next.ev.gio_ket_thuc} · ${next.ev.phong}</div><div class="nb-count">Còn: ${fmtDuration(st.ms)}</div>`;
+          banner.innerHTML = <div class="nb-label">Tiết tiếp theo</div><div class="nb-title"></div><div class="nb-sub"> / ·  –  · </div><div class="nb-count">Còn: </div>;
         }
       } else {
         banner.className = "next-banner";
-        banner.innerHTML = `<div class="nb-label">Không còn tiết nào trong tuần này</div>`;
+        banner.innerHTML = <div class="nb-label">Không còn tiết nào trong tuần này</div>;
       }
     }
 
@@ -138,7 +137,7 @@
 
       const header = document.createElement("div");
       header.className = "day-header" + (d === todayIdx ? " today" : "");
-      header.innerHTML = `<span class="day-name">${WEEKDAY_LABELS[d]}</span><span class="day-date">${pad(dt.d)}/${pad(dt.m)}</span>`;
+      header.innerHTML = <span class="day-name"></span><span class="day-date">/</span>;
       col.appendChild(header);
 
       const dayEvents = events.filter(e => e.thu_idx === d).sort((a, b) => (a.tiet_start || 0) - (b.tiet_start || 0));
@@ -157,7 +156,7 @@
         const card = document.createElement("div");
         card.className = "class-card " + st.key;
         const statusLabel = st.key === "ongoing" ? "ĐANG HỌC" : st.key === "upcoming" ? "Còn " + fmtDuration(st.ms) : "Đã học xong";
-        card.innerHTML = `<div class="class-title">${ev.ten_mon}</div><div class="class-time">Tiết ${ev.tiet_start}-${ev.tiet_end} · ${ev.gio_bat_dau}–${ev.gio_ket_thuc}</div><div class="class-loc">${ev.phong}${ev.cach_tuan ? " · Cách tuần" : ""}</div><span class="class-status ${st.key}">${statusLabel}</span>`;
+        card.innerHTML = <div class="class-title"></div><div class="class-time">Tiết - · –</div><div class="class-loc"></div><span class="class-status "></span>;
         card.addEventListener("click", () => openModal(ev, occ));
         col.appendChild(card);
       });
