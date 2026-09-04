@@ -62,21 +62,21 @@
     if (e.key === "Escape") closeModal();
   });
 
-  function openModal(ev, occ) {
+    function openModal(ev, occ) {
     const st = statusOf(occ);
     const statusText = st.key === "ongoing" ? "ĐANG HỌC" : st.key === "upcoming" ? "Sắp tới" : "Đã học xong";
     if (modalBody) {
-      modalBody.innerHTML = 
-        <h2></h2>
-        <div class="modal-row"><span>Trạng thái</span><span></span></div>
-        <div class="modal-row"><span>Mã lớp</span><span></span></div>
-        <div class="modal-row"><span>Giảng viên</span><span></span></div>
-        <div class="modal-row"><span>Thời gian</span><span>, tiết -</span></div>
-        <div class="modal-row"><span>Giờ học</span><span> – </span></div>
-        <div class="modal-row"><span>Phòng</span><span></span></div>
-        <div class="modal-row"><span>Chu kỳ</span><span></span></div>
-        <div class="modal-row"><span>Thời gian học</span><span> – </span></div>
-      ;
+      modalBody.innerHTML = `
+        <h2>${ev.ten_mon}</h2>
+        <div class="modal-row"><span>Trạng thái</span><span>${statusText}</span></div>
+        <div class="modal-row"><span>Mã lớp</span><span>${ev.ma_lop}</span></div>
+        <div class="modal-row"><span>Giảng viên</span><span>${ev.giang_vien || "—"}</span></div>
+        <div class="modal-row"><span>Thời gian</span><span>${ev.thu}, tiết ${ev.tiet_start}-${ev.tiet_end}</span></div>
+        <div class="modal-row"><span>Giờ học</span><span>${ev.gio_bat_dau} – ${ev.gio_ket_thuc}</span></div>
+        <div class="modal-row"><span>Phòng</span><span>${ev.phong}</span></div>
+        <div class="modal-row"><span>Chu kỳ</span><span>${ev.cach_tuan ? "Cách tuần" : "Hàng tuần"}</span></div>
+        <div class="modal-row"><span>Thời gian học</span><span>${ev.ngay_bat_dau} – ${ev.ngay_ket_thuc || "?"}</span></div>
+      `;
     }
     if (modalOverlay) modalOverlay.hidden = false;
   }
