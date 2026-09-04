@@ -1,2 +1,0 @@
-Flask==3.0.3
-icalendar==5.0.13
