@@ -14,7 +14,15 @@
 <header class="status-bar" id="statusBar">
   <div class="status-top">
     <span class="clock" id="clockNow">--:--:--</span>
-    <span class="date-today" id="dateToday">—</span>
+    <div class="status-top-right">
+      <span class="date-today" id="dateToday">—</span>
+      <button class="icon-btn" id="btnSettings" title="Nhập / chỉnh sửa lịch" aria-label="Cài đặt">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1.04-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.56 1.04H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15z"/>
+        </svg>
+      </button>
+    </div>
   </div>
   <div class="status-main" id="statusMain">
     <span class="status-label">Đang tải lịch học…</span>
@@ -31,6 +39,137 @@
 </main>
 
 <footer class="legend" id="legend"></footer>
+
+<details class="guide">
+  <summary>Cách đọc thời khoá biểu</summary>
+  <div class="guide-body">
+
+    <h3>Tiết học</h3>
+    <p>"12–12" nghĩa là học từ tiết 12 đến tiết 12 (một tiết).</p>
+    <p><strong>Sáng:</strong> tiết 1–5 (07:30–11:30) · <strong>Chiều:</strong> tiết 6–10 (13:00–17:00) · <strong>Tối:</strong> tiết 12–15 (17:45–20:45).</p>
+
+    <h3>Hình thức giảng dạy (HTGD)</h3>
+    <ul class="guide-grid">
+      <li><b>LT</b> — Lý thuyết</li>
+      <li><b>ĐA</b> — Đồ án môn học</li>
+      <li><b>HT1</b> — Thực hành hình thức 1</li>
+      <li><b>TTTN</b> — Thực tập tốt nghiệp</li>
+      <li><b>HT2</b> — Thực hành hình thức 2</li>
+      <li><b>KLTN</b> — Khoá luận tốt nghiệp</li>
+      <li><b>TG</b> — Lớp trợ giảng</li>
+      <li><b>CĐ</b> — Chuyên đề</li>
+      <li><b>NK</b> — Môn ngoại khoá (GDQP, GDTC)</li>
+      <li><b>BT</b> — Bài tập</li>
+    </ul>
+    <p>Lớp HT2, ĐA, KLTN, TTTN không có lịch cố định nên cột Thứ / Tiết / Phòng để dấu —; giảng viên sẽ hẹn lịch riêng — nên thêm những lớp này bằng tay ở mục <em>Thêm thủ công</em> và ghi chú vào tên môn thay vì đặt giờ cố định.</p>
+
+    <h3>Chu kỳ học</h3>
+    <p>Lớp có nhãn <strong>Cách tuần</strong> ở cột Tiết thì hai tuần học một lần, không phải tuần nào cũng học. Lớp không có nhãn là học hàng tuần.</p>
+
+    <h3>Phòng học</h3>
+    <ul class="guide-grid">
+      <li><b>A, B, C, E</b> — Toà A/B/C/E, số sau là tầng rồi số phòng (B1.18 = tầng 1 phòng 18, C111 = tầng 1 phòng 11)</li>
+      <li><b>GD1, GD2, GD3, GĐC</b> — Giảng đường</li>
+      <li><b>HTA, HTE</b> — Hội trường A / Hội trường E</li>
+      <li><b>ITC-A.202</b> — Toà ITC, khu A, phòng 202</li>
+      <li><b>ONLINE</b> — Học trực tuyến</li>
+      <li>Sân bóng đá, Sân cầu lông, Sân Pickleball… — Sân bãi Giáo dục thể chất</li>
+    </ul>
+
+    <h3>Ngôn ngữ giảng dạy</h3>
+    <p>Ghi ngay sau mã lớp: <b>-VN</b> tiếng Việt · <b>-EN</b> tiếng Anh · <b>-JP</b> tiếng Nhật.</p>
+  </div>
+</details>
+
+<div class="overlay" id="settingsOverlay" hidden>
+  <div class="panel" role="dialog" aria-label="Cài đặt thời khoá biểu">
+    <div class="panel-head">
+      <h2>Lịch học</h2>
+      <button class="icon-btn" id="btnCloseSettings" aria-label="Đóng">✕</button>
+    </div>
+
+    <div class="panel-tabs">
+      <button class="tab-btn is-active" data-tab="import">Nhập file .ics</button>
+      <button class="tab-btn" data-tab="manual">Thêm thủ công</button>
+      <button class="tab-btn" data-tab="list">Danh sách lớp</button>
+    </div>
+
+    <div class="panel-body" id="tabImport">
+      <p class="panel-hint">
+        Vào <b>portal.uit.edu.vn/sinh-vien/tkb</b> → chọn học kỳ → xuất file <b>.ics</b>,
+        rồi chọn file đó ở đây. Toàn bộ lớp hiện tại sẽ được <b>thay thế</b> bằng dữ liệu
+        trong file mới.
+      </p>
+      <label class="file-drop" for="icsFileInput">
+        <span id="fileDropLabel">Chọn file .ics</span>
+        <input type="file" id="icsFileInput" accept=".ics" hidden>
+      </label>
+      <div id="importPreview"></div>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btnConfirmImport" disabled>Lưu & sử dụng</button>
+        <button class="btn" id="btnResetDefault">Khôi phục lịch mặc định</button>
+      </div>
+      <p class="panel-note">
+        Dữ liệu chỉ lưu trên trình duyệt/thiết bị này (localStorage). Nếu xem trên
+        cả điện thoại lẫn máy tính, cần nhập file .ics này một lần trên mỗi thiết bị.
+      </p>
+    </div>
+
+    <div class="panel-body" id="tabManual" hidden>
+      <form id="manualForm">
+        <div class="form-row">
+          <label>Tên môn<input type="text" name="subject" required placeholder="VD: Cấu trúc dữ liệu và giải thuật"></label>
+          <label>Mã lớp<input type="text" name="id" placeholder="VD: CS112.R11 (để trống sẽ tự tạo)"></label>
+        </div>
+        <div class="form-row">
+          <label>Phòng<input type="text" name="room" placeholder="VD: B3.20"></label>
+          <label>Giảng viên<input type="text" name="teacher" placeholder="VD: ThS Nguyễn Văn A"></label>
+        </div>
+        <div class="form-row">
+          <label>Thứ
+            <select name="dow">
+              <option value="1">Thứ 2</option>
+              <option value="2">Thứ 3</option>
+              <option value="3">Thứ 4</option>
+              <option value="4">Thứ 5</option>
+              <option value="5">Thứ 6</option>
+              <option value="6">Thứ 7</option>
+              <option value="0">Chủ nhật</option>
+            </select>
+          </label>
+          <label>Tiết (nhãn hiển thị)<input type="text" name="tiet" placeholder="VD: Tiết 1-3"></label>
+        </div>
+        <div class="form-row">
+          <label>Giờ bắt đầu<input type="time" name="start" required value="07:30"></label>
+          <label>Giờ kết thúc<input type="time" name="end" required value="09:50"></label>
+        </div>
+        <div class="form-row">
+          <label>Chu kỳ
+            <select name="interval">
+              <option value="1">Học mỗi tuần</option>
+              <option value="2">Cách tuần (2 tuần/lần)</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>Ngày học đầu tiên<input type="date" name="startDate" required></label>
+          <label>Ngày kết thúc học kỳ<input type="date" name="until" required></label>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-primary" type="submit">Thêm lớp</button>
+        </div>
+      </form>
+      <p class="panel-note" id="manualStatus"></p>
+    </div>
+
+    <div class="panel-body" id="tabList" hidden>
+      <div id="courseList"></div>
+      <div class="panel-actions">
+        <button class="btn btn-danger" id="btnClearAll">Xoá tất cả</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
