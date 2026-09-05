@@ -15,14 +15,20 @@
 const STORAGE_KEY = "tkb.courses.v1";
 
 const DEFAULT_COURSES = [
-  { id: "IT001.R118", subject: "Nhập môn lập trình", groupKey: "IT001", room: "B3.20", tiet: "Tiết 1-3", teacher: "ThS Phan Minh Quân", dow: 5, start: "07:30", end: "09:50", interval: 1, startDate: "2026-09-11", until: "2026-12-26" },
-  { id: "IT001.R118.1", subject: "Nhập môn lập trình", groupKey: "IT001", room: "C111", tiet: "Tiết 6-10", teacher: "Trần Nhật Khoa", dow: 5, start: "13:00", end: "17:00", interval: 2, startDate: "2026-09-25", until: "2026-12-19" },
-  { id: "MA003.R119", subject: "Đại số tuyến tính", groupKey: "MA003", room: "B4.16", tiet: "Tiết 1-4", teacher: "Quách Văn Chương", dow: 4, start: "07:30", end: "10:45", interval: 1, startDate: "2026-09-10", until: "2026-11-28" },
-  { id: "MA006.R119", subject: "Giải tích", groupKey: "MA006", room: "B3.20", tiet: "Tiết 6-9", teacher: "ThS Lê Hoàng Tuấn", dow: 1, start: "13:00", end: "16:15", interval: 1, startDate: "2026-09-07", until: "2026-12-26" },
-  { id: "NT005.R12", subject: "Giới thiệu ngành MMT&TTDL", groupKey: "NT005", room: "B1.14", tiet: "Tiết 1-3", teacher: "ThS Nguyễn Khánh Thuật", dow: 3, start: "07:30", end: "09:50", interval: 2, startDate: "2026-09-16", until: "2026-11-21" },
-  { id: "PH002.R13", subject: "Nhập môn mạch số", groupKey: "PH002", room: "B3.16", tiet: "Tiết 6-9", teacher: "ThS Ngô Hiếu Trường", dow: 2, start: "13:00", end: "16:15", interval: 1, startDate: "2026-09-08", until: "2026-11-28" },
-  { id: "PH002.R13.1", subject: "Nhập môn mạch số", groupKey: "PH002", room: "B2.16", tiet: "Tiết 1-5", teacher: "ThS Ngô Hiếu Trường", dow: 2, start: "07:30", end: "11:30", interval: 2, startDate: "2026-09-22", until: "2026-12-19" },
+  { id: "IT001.R118", subject: "Nhập môn lập trình", groupKey: "IT001", room: "B3.20", tiet: "Tiết 1-3", teacher: "ThS Phan Minh Quân", htgd: "LT", dow: 5, start: "07:30", end: "09:50", interval: 1, startDate: "2026-09-11", until: "2026-12-26" },
+  { id: "IT001.R118.1", subject: "Nhập môn lập trình", groupKey: "IT001", room: "C111", tiet: "Tiết 6-10", teacher: "Trần Nhật Khoa", htgd: "HT1", dow: 5, start: "13:00", end: "17:00", interval: 2, startDate: "2026-09-25", until: "2026-12-19" },
+  { id: "MA003.R119", subject: "Đại số tuyến tính", groupKey: "MA003", room: "B4.16", tiet: "Tiết 1-4", teacher: "Quách Văn Chương", htgd: "LT", dow: 4, start: "07:30", end: "10:45", interval: 1, startDate: "2026-09-10", until: "2026-11-28" },
+  { id: "MA006.R119", subject: "Giải tích", groupKey: "MA006", room: "B3.20", tiet: "Tiết 6-9", teacher: "ThS Lê Hoàng Tuấn", htgd: "LT", dow: 1, start: "13:00", end: "16:15", interval: 1, startDate: "2026-09-07", until: "2026-12-26" },
+  { id: "NT005.R12", subject: "Giới thiệu ngành MMT&TTDL", groupKey: "NT005", room: "B1.14", tiet: "Tiết 1-3", teacher: "ThS Nguyễn Khánh Thuật", htgd: "LT", dow: 3, start: "07:30", end: "09:50", interval: 2, startDate: "2026-09-16", until: "2026-11-21" },
+  { id: "PH002.R13", subject: "Nhập môn mạch số", groupKey: "PH002", room: "B3.16", tiet: "Tiết 6-9", teacher: "ThS Ngô Hiếu Trường", htgd: "LT", dow: 2, start: "13:00", end: "16:15", interval: 1, startDate: "2026-09-08", until: "2026-11-28" },
+  { id: "PH002.R13.1", subject: "Nhập môn mạch số", groupKey: "PH002", room: "B2.16", tiet: "Tiết 1-5", teacher: "ThS Ngô Hiếu Trường", htgd: "HT1", dow: 2, start: "07:30", end: "11:30", interval: 2, startDate: "2026-09-22", until: "2026-12-19" },
 ];
+
+const HTGD_LABELS = {
+  LT: "Lý thuyết", "ĐA": "Đồ án môn học", HT1: "Thực hành hình thức 1", HT2: "Thực hành hình thức 2",
+  TTTN: "Thực tập tốt nghiệp", KLTN: "Khoá luận tốt nghiệp", TG: "Lớp trợ giảng",
+  "CĐ": "Chuyên đề", NK: "Ngoại khoá", BT: "Bài tập",
+};
 
 const PALETTE = ["#6EC6FF", "#C9A8FF", "#FFB4A2", "#8CE0C4", "#FFD97D", "#FF9AD5", "#B7E28A", "#9FB8FF", "#FFC98C", "#8CDDEA"];
 
@@ -33,6 +39,7 @@ const BASE_HOUR_PX = 64;
 
 let courses = loadCourses();
 let activeDow = new Date().getDay();
+let viewedMonday = mondayOf(new Date());
 
 /* =================== Storage =================== */
 function loadCourses() {
@@ -193,6 +200,7 @@ function parseICS(text) {
       room: location,
       tiet: tietMatch ? `Tiết ${tietMatch[1]}` : "",
       teacher: gvMatch ? gvMatch[1].trim() : "",
+      htgd: "",
       dow,
       start: dtstart.timeStr,
       end: dtend.timeStr,
@@ -223,6 +231,15 @@ function buildDayTabs(weekMonday) {
     btn.addEventListener("click", () => { activeDow = dow; renderGrid(); });
     nav.appendChild(btn);
   });
+}
+
+function buildWeekNav() {
+  const label = document.getElementById("weekRangeLabel");
+  const btnThisWeek = document.getElementById("btnThisWeek");
+  const sunday = addDays(viewedMonday, 6);
+  label.textContent = `Tuần ${fmtDate(viewedMonday)} – ${fmtDate(sunday)}`;
+  const isCurrentWeek = viewedMonday.getTime() === mondayOf(new Date()).getTime();
+  btnThisWeek.hidden = isCurrentWeek;
 }
 
 function buildHourRuler() {
@@ -274,13 +291,15 @@ function buildWeekGrid(weekMonday, colorMap) {
       if (!isLive) block.style.borderLeftColor = color;
 
       const biweeklyTag = course.interval === 2 ? `<span class="b-tag">cách tuần</span>` : "";
+      const htgdTag = course.htgd ? `<span class="b-tag b-htgd">${course.htgd}</span>` : "";
       const offPill = !active ? `<span class="b-off-pill">Tuần này nghỉ</span>` : "";
       block.innerHTML = `
         <div class="b-name">${course.subject}</div>
         <div class="b-meta">${course.start}–${course.end}${course.room ? " · " + course.room : ""}${course.tiet ? " · " + course.tiet : ""}</div>
         ${course.teacher ? `<div class="b-meta">${course.teacher}</div>` : ""}
-        ${biweeklyTag}${offPill}
+        ${htgdTag}${biweeklyTag}${offPill}
       `;
+      block.addEventListener("click", () => showDetail(course, date, active));
       col.appendChild(block);
     });
 
@@ -400,11 +419,11 @@ function updateStatusBar() {
 
 /* =================== Main render =================== */
 function renderGrid() {
-  const weekMonday = mondayOf(new Date());
   const colorMap = buildColorMap();
-  buildDayTabs(weekMonday);
+  buildWeekNav();
+  buildDayTabs(viewedMonday);
   buildHourRuler();
-  buildWeekGrid(weekMonday, colorMap);
+  buildWeekGrid(viewedMonday, colorMap);
   updateNowLine();
   buildLegend(colorMap);
 }
@@ -419,6 +438,58 @@ function tick() {
   updateStatusBar();
 }
 
+function scrollToNow() {
+  const line = document.getElementById("nowLine");
+  if (line.style.display === "none") return;
+  if (viewedMonday.getTime() !== mondayOf(new Date()).getTime()) return;
+  line.scrollIntoView({ block: "center", behavior: "auto" });
+}
+
+/* =================== Week navigation =================== */
+document.getElementById("btnPrevWeek").addEventListener("click", () => {
+  viewedMonday = addDays(viewedMonday, -7);
+  renderGrid();
+});
+document.getElementById("btnNextWeek").addEventListener("click", () => {
+  viewedMonday = addDays(viewedMonday, 7);
+  renderGrid();
+});
+document.getElementById("btnThisWeek").addEventListener("click", () => {
+  viewedMonday = mondayOf(new Date());
+  activeDow = new Date().getDay();
+  renderGrid();
+});
+
+/* =================== Detail overlay =================== */
+const detailOverlay = document.getElementById("detailOverlay");
+const btnCloseDetail = document.getElementById("btnCloseDetail");
+
+function showDetail(course, date, active) {
+  document.getElementById("detailTitle").textContent = course.subject;
+  const rows = [
+    ["Mã lớp", course.id],
+    ["Hình thức", course.htgd ? `${course.htgd} — ${HTGD_LABELS[course.htgd] || ""}` : "—"],
+    ["Thứ / Giờ", `${DAY_NAMES[course.dow]} · ${course.start}–${course.end}`],
+    ["Tiết", course.tiet || "—"],
+    ["Phòng", course.room || "—"],
+    ["Giảng viên", course.teacher || "—"],
+    ["Chu kỳ", course.interval === 2 ? "Cách tuần (2 tuần/lần)" : "Học mỗi tuần"],
+    ["Thời gian học", `${course.startDate} → ${course.until}`],
+  ];
+  document.getElementById("detailBody").innerHTML =
+    rows.map(([label, value]) => `<div class="detail-row"><span class="d-label">${label}</span><span class="d-value">${value}</span></div>`).join("") +
+    (active ? "" : `<div class="detail-off-note">Tuần đang xem (${fmtDate(date)}) không có buổi học này — lớp cách tuần chỉ học 2 tuần/lần.</div>`);
+  detailOverlay.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function closeDetail() {
+  detailOverlay.hidden = true;
+  if (overlay.hidden) document.body.style.overflow = "";
+}
+btnCloseDetail.addEventListener("click", closeDetail);
+detailOverlay.addEventListener("click", (e) => { if (e.target === detailOverlay) closeDetail(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !detailOverlay.hidden) closeDetail(); });
+
 /* =================== Settings panel =================== */
 const overlay = document.getElementById("settingsOverlay");
 const btnSettings = document.getElementById("btnSettings");
@@ -431,7 +502,7 @@ function openSettings() {
 }
 function closeSettings() {
   overlay.hidden = true;
-  document.body.style.overflow = "";
+  if (detailOverlay.hidden) document.body.style.overflow = "";
 }
 btnSettings.addEventListener("click", openSettings);
 btnCloseSettings.addEventListener("click", closeSettings);
@@ -524,6 +595,7 @@ manualForm.addEventListener("submit", (e) => {
     room: fd.get("room").trim(),
     tiet: fd.get("tiet").trim(),
     teacher: fd.get("teacher").trim(),
+    htgd: fd.get("htgd") || "",
     dow: parseInt(fd.get("dow"), 10),
     start, end,
     interval: parseInt(fd.get("interval"), 10),
@@ -544,6 +616,7 @@ function renderCourseList() {
     courseListEl.innerHTML = `<p class="empty-note">Chưa có lớp học nào.</p>`;
     return;
   }
+  const htgdOptions = ["", "LT", "ĐA", "HT1", "HT2", "TTTN", "KLTN", "TG", "CĐ", "NK", "BT"];
   courseListEl.innerHTML = courses
     .map(
       (c, i) => `
@@ -551,6 +624,9 @@ function renderCourseList() {
         <div>
           <div class="c-name">${c.subject}</div>
           <div class="c-meta">${DAY_NAMES[c.dow]} · ${c.start}-${c.end}${c.room ? " · " + c.room : ""}${c.interval === 2 ? " · cách tuần" : ""}</div>
+          <select class="c-htgd-select" data-idx="${i}" aria-label="Hình thức giảng dạy">
+            ${htgdOptions.map((h) => `<option value="${h}" ${c.htgd === h ? "selected" : ""}>${h || "— HTGD —"}</option>`).join("")}
+          </select>
         </div>
         <button class="c-del" data-idx="${i}" aria-label="Xoá lớp này">✕</button>
       </div>`
@@ -566,6 +642,14 @@ function renderCourseList() {
       renderAll();
     });
   });
+  courseListEl.querySelectorAll(".c-htgd-select").forEach((sel) => {
+    sel.addEventListener("change", () => {
+      const idx = parseInt(sel.dataset.idx, 10);
+      courses[idx].htgd = sel.value;
+      saveCourses();
+      renderGrid();
+    });
+  });
 }
 
 btnClearAll.addEventListener("click", () => {
@@ -578,8 +662,15 @@ btnClearAll.addEventListener("click", () => {
 
 /* =================== Boot =================== */
 renderAll();
+setTimeout(scrollToNow, 50);
 setInterval(tick, 30 * 1000);
 setInterval(() => {
   const now = new Date();
   if (now.getHours() === 0 && now.getMinutes() === 0) renderAll();
 }, 60 * 1000);
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => { /* offline install optional, ignore failure */ });
+  });
+}

@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TKB HK1 2026-2027</title>
 <meta name="theme-color" content="#0A1B30">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TKB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -28,6 +34,15 @@
     <span class="status-label">Đang tải lịch học…</span>
   </div>
 </header>
+
+<nav class="week-nav" id="weekNav">
+  <button class="icon-btn" id="btnPrevWeek" aria-label="Tuần trước">‹</button>
+  <div class="week-nav-label">
+    <span id="weekRangeLabel">—</span>
+    <button class="link-btn" id="btnThisWeek" hidden>Về tuần này</button>
+  </div>
+  <button class="icon-btn" id="btnNextWeek" aria-label="Tuần sau">›</button>
+</nav>
 
 <nav class="day-tabs" id="dayTabs" aria-label="Chọn ngày"></nav>
 
@@ -151,6 +166,21 @@
               <option value="2">Cách tuần (2 tuần/lần)</option>
             </select>
           </label>
+          <label>Hình thức (HTGD)
+            <select name="htgd">
+              <option value="">— (không ghi)</option>
+              <option value="LT">LT — Lý thuyết</option>
+              <option value="ĐA">ĐA — Đồ án môn học</option>
+              <option value="HT1">HT1 — Thực hành hình thức 1</option>
+              <option value="HT2">HT2 — Thực hành hình thức 2</option>
+              <option value="TTTN">TTTN — Thực tập tốt nghiệp</option>
+              <option value="KLTN">KLTN — Khoá luận tốt nghiệp</option>
+              <option value="TG">TG — Lớp trợ giảng</option>
+              <option value="CĐ">CĐ — Chuyên đề</option>
+              <option value="NK">NK — Ngoại khoá</option>
+              <option value="BT">BT — Bài tập</option>
+            </select>
+          </label>
         </div>
         <div class="form-row">
           <label>Ngày học đầu tiên<input type="date" name="startDate" required></label>
@@ -170,6 +200,16 @@
       </div>
     </div>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="detailOverlay" hidden>
+  <div class="panel detail-panel" role="dialog" aria-label="Chi tiết lớp học">
+    <div class="panel-head">
+      <h2 id="detailTitle">—</h2>
+      <button class="icon-btn" id="btnCloseDetail" aria-label="Đóng">✕</button>
+    </div>
+    <div class="panel-scroll" id="detailBody"></div>
   </div>
 </div>
 
