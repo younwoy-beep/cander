@@ -426,10 +426,12 @@ const btnCloseSettings = document.getElementById("btnCloseSettings");
 
 function openSettings() {
   overlay.hidden = false;
+  document.body.style.overflow = "hidden";
   renderCourseList();
 }
 function closeSettings() {
   overlay.hidden = true;
+  document.body.style.overflow = "";
 }
 btnSettings.addEventListener("click", openSettings);
 btnCloseSettings.addEventListener("click", closeSettings);
