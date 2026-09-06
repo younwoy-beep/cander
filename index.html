@@ -108,6 +108,7 @@
       <button class="tab-btn is-active" data-tab="import">Nhập file .ics</button>
       <button class="tab-btn" data-tab="manual">Thêm thủ công</button>
       <button class="tab-btn" data-tab="list">Danh sách lớp</button>
+      <button class="tab-btn" data-tab="notify">Thông báo</button>
     </div>
 
     <div class="panel-body" id="tabImport">
@@ -197,6 +198,20 @@
       <div id="courseList"></div>
       <div class="panel-actions">
         <button class="btn btn-danger" id="btnClearAll">Xoá tất cả</button>
+      </div>
+    </div>
+
+    <div class="panel-body" id="tabNotify" hidden>
+      <p class="panel-hint">
+        Bật để được báo trước khi sắp tới giờ học — <b>30, 15 và 5 phút</b>
+        trước mỗi tiết. Cần đã dựng sẵn phần server riêng (xem mục "Thông
+        báo đẩy" trong README) — nếu chưa dựng, bấm Bật sẽ báo lỗi.
+        Ổn định nhất trên <b>Android (Chrome)</b>; chưa hỗ trợ iPhone.
+      </p>
+      <p class="panel-note" id="notifStatusText">Đang kiểm tra…</p>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btnEnableNotif">Bật thông báo</button>
+        <button class="btn btn-danger" id="btnDisableNotif" hidden>Tắt thông báo</button>
       </div>
     </div>
     </div>

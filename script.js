@@ -57,6 +57,7 @@ function saveCourses() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(courses));
   } catch (e) { /* storage full or blocked — data still works this session */ }
+  syncScheduleToServer(); // best-effort, chỉ có tác dụng nếu đã bật thông báo
 }
 
 /* =================== Time helpers =================== */
@@ -272,34 +273,35 @@ function buildWeekGrid(weekMonday, colorMap) {
     if (dow === activeDow) col.classList.add("is-active");
 
     courses.filter((c) => c.dow === dow).forEach((course) => {
+      const active = occursOn(course, date);
+      if (!active) return; // chỉ hiện lớp thực sự có học tuần này
+
       const startMin = toMinutes(course.start);
       const endMin = toMinutes(course.end);
       const top = ((startMin - GRID_START_MIN) / 60) * hpx;
       const height = ((endMin - startMin) / 60) * hpx;
 
-      const active = occursOn(course, date);
       const now = new Date();
       const isToday = atMidnight(date).getTime() === atMidnight(now).getTime();
       const nowMin = now.getHours() * 60 + now.getMinutes();
-      const isLive = active && isToday && nowMin >= startMin && nowMin < endMin;
+      const isLive = isToday && nowMin >= startMin && nowMin < endMin;
       const color = colorMap[course.groupKey || course.id] || PALETTE[0];
 
       const block = document.createElement("div");
-      block.className = "block" + (!active ? " is-off" : "") + (isLive ? " is-live" : "");
+      block.className = "block" + (isLive ? " is-live" : "");
       block.style.top = top + "px";
       block.style.height = Math.max(height, 30) + "px";
       if (!isLive) block.style.borderLeftColor = color;
 
       const biweeklyTag = course.interval === 2 ? `<span class="b-tag">cách tuần</span>` : "";
       const htgdTag = course.htgd ? `<span class="b-tag b-htgd">${course.htgd}</span>` : "";
-      const offPill = !active ? `<span class="b-off-pill">Tuần này nghỉ</span>` : "";
       block.innerHTML = `
         <div class="b-name">${course.subject}</div>
         <div class="b-meta">${course.start}–${course.end}${course.room ? " · " + course.room : ""}${course.tiet ? " · " + course.tiet : ""}</div>
         ${course.teacher ? `<div class="b-meta">${course.teacher}</div>` : ""}
-        ${htgdTag}${biweeklyTag}${offPill}
+        ${htgdTag}${biweeklyTag}
       `;
-      block.addEventListener("click", () => showDetail(course, date, active));
+      block.addEventListener("click", () => showDetail(course, date, true));
       col.appendChild(block);
     });
 
@@ -516,6 +518,7 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
     btn.classList.add("is-active");
     document.getElementById("tab" + btn.dataset.tab[0].toUpperCase() + btn.dataset.tab.slice(1)).hidden = false;
     if (btn.dataset.tab === "list") renderCourseList();
+    if (btn.dataset.tab === "notify") refreshNotifUI();
   });
 });
 
@@ -658,6 +661,110 @@ btnClearAll.addEventListener("click", () => {
   saveCourses();
   renderCourseList();
   renderAll();
+});
+
+/* =================== Push notifications (Android) =================== */
+const VAPID_PUBLIC_KEY = "BPqo6zbhxSMzhz4MGMGnp50IBxTkP9NgCSsnqAFdZYGMywKWtK-GiblFvbvljrJamqGTPXwtj7srZenNkl_eSeQ";
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = atob(base64);
+  return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
+}
+
+function notifSupported() {
+  return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+}
+
+async function getExistingSubscription() {
+  if (!notifSupported()) return null;
+  const reg = await navigator.serviceWorker.ready;
+  return reg.pushManager.getSubscription();
+}
+
+async function syncScheduleToServer() {
+  try {
+    const sub = await getExistingSubscription();
+    if (!sub) return; // chưa bật thông báo, không cần đồng bộ
+    await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subscription: sub.toJSON(), courses }),
+    });
+  } catch (e) { /* best-effort, im lặng nếu lỗi mạng */ }
+}
+
+function refreshNotifUI() {
+  const statusEl = document.getElementById("notifStatusText");
+  const btnOn = document.getElementById("btnEnableNotif");
+  const btnOff = document.getElementById("btnDisableNotif");
+  if (!notifSupported()) {
+    statusEl.textContent = "Trình duyệt này không hỗ trợ thông báo đẩy.";
+    btnOn.hidden = true;
+    btnOff.hidden = true;
+    return;
+  }
+  getExistingSubscription().then((sub) => {
+    if (sub) {
+      statusEl.textContent = "Đã bật — sẽ báo trước 30, 15 và 5 phút mỗi khi sắp tới giờ học.";
+      btnOn.hidden = true;
+      btnOff.hidden = false;
+    } else {
+      statusEl.textContent = "Chưa bật thông báo.";
+      btnOn.hidden = false;
+      btnOff.hidden = true;
+    }
+  });
+}
+
+document.getElementById("btnEnableNotif").addEventListener("click", async () => {
+  const statusEl = document.getElementById("notifStatusText");
+  if (!notifSupported()) {
+    statusEl.textContent = "Trình duyệt này không hỗ trợ thông báo đẩy.";
+    return;
+  }
+  statusEl.textContent = "Đang xin quyền thông báo…";
+  const perm = await Notification.requestPermission();
+  if (perm !== "granted") {
+    statusEl.textContent = "Bạn chưa cho phép thông báo — vào cài đặt trình duyệt để bật lại nếu đổi ý.";
+    return;
+  }
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+    }
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subscription: sub.toJSON(), courses }),
+    });
+    if (!res.ok) throw new Error("Server chưa sẵn sàng (chưa dựng /api hoặc chưa nối Redis)");
+    refreshNotifUI();
+  } catch (e) {
+    statusEl.textContent = "Không bật được: " + (e.message || e) + " — xem README phần dựng server.";
+  }
+});
+
+document.getElementById("btnDisableNotif").addEventListener("click", async () => {
+  const statusEl = document.getElementById("notifStatusText");
+  try {
+    const sub = await getExistingSubscription();
+    if (sub) {
+      await sub.unsubscribe();
+      fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscription: null }),
+      }).catch(() => {});
+    }
+  } catch (e) { /* ignore */ }
+  refreshNotifUI();
 });
 
 /* =================== Boot =================== */

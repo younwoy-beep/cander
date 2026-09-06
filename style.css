@@ -312,21 +312,6 @@ button, input, select {
   font-weight: 600;
 }
 
-.block.is-off {
-  background: var(--bg-panel);
-}
-.block.is-off .b-name,
-.block.is-off .b-meta { opacity: 0.62; }
-.block.is-off .b-off-pill {
-  display: inline-block;
-  margin-top: 4px;
-  font-size: 9.5px;
-  color: var(--ink-dim);
-  background: var(--bg-panel-raised);
-  border-radius: 4px;
-  padding: 1px 5px;
-}
-
 .block.is-live {
   border-left-color: var(--live) !important;
   box-shadow: 0 0 0 1px var(--live) inset, 0 0 14px 0 rgba(255,122,87,0.28);
@@ -606,7 +591,7 @@ button, input, select {
 
   .block .b-name { font-size: 13.5px; }
   .block .b-meta { font-size: 12px; }
-  .block .b-tag, .block .b-off-pill { font-size: 10.5px; }
+  .block .b-tag { font-size: 10.5px; }
   .block { padding: 8px 10px; }
 }
 
