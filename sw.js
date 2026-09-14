@@ -1,4 +1,4 @@
-const CACHE = "tkb-cache-v6";
+const CACHE = "tkb-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
