@@ -7,11 +7,11 @@
   --ink: #33415C;
   --ink-dim: #7288A3;
   --ink-faint: #A9BBD0;
-  --live: #FF8FAB;
-  --live-soft: rgba(255, 143, 171, 0.22);
-  --live-strong: #F2749A;
+  --live: #4F9BDE;
+  --live-soft: rgba(79, 155, 222, 0.20);
+  --live-strong: #2F6FB0;
   --gold: #F3B93D;
-  --ribbon: #F49BC1;
+  --ribbon: #6FB3E0;
 
   --hour-h: 64px;
   --font-display: "Baloo 2", "Quicksand", system-ui, sans-serif;
@@ -183,9 +183,9 @@ button, input, select {
 }
 
 @keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(255,143,171,0.55); }
-  70%  { box-shadow: 0 0 0 10px rgba(255,143,171,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,143,171,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(79,155,222,0.55); }
+  70%  { box-shadow: 0 0 0 10px rgba(79,155,222,0); }
+  100% { box-shadow: 0 0 0 0 rgba(79,155,222,0); }
 }
 
 .status-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
